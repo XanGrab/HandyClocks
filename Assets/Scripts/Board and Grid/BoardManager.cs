@@ -63,9 +63,8 @@ public class BoardManager : MonoBehaviour {
     * This method Displays the ball's point value when a ball breaks a target
     */
     public void DisplayTime(Vector3 position, ClockType time){
-        // GameObject popup = Instantiate(displayInstance, position, Quaternion.identity);
-        // DisplayValue popup.GetComponent<DisplayValue>();
-        // popup.ShowTime(position, time);
+        GameObject popup = Instantiate(displayInstance, position, Quaternion.identity);
+        popup.GetComponent<DisplayValue>().ShowTime(position, time);
     }
 
 	private void CreateBoard (float xOffset, float yOffset) {
