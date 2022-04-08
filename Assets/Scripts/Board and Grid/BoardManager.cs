@@ -13,6 +13,7 @@ using Random = UnityEngine.Random;
 public class BoardManager : MonoBehaviour {
 	public static BoardManager instance;
 	private SpriteRenderer bg;
+    public static GameObject displayInstance;
 
 	public GameObject tile;
 	public int xSize, ySize;
@@ -58,6 +59,15 @@ public class BoardManager : MonoBehaviour {
 		objTr.localScale /= 1.1f;
 	}
 	
+    /**
+    * This method Displays the ball's point value when a ball breaks a target
+    */
+    public void DisplayTime(Vector3 position, ClockType time){
+        // GameObject popup = Instantiate(displayInstance, position, Quaternion.identity);
+        // DisplayValue popup.GetComponent<DisplayValue>();
+        // popup.ShowTime(position, time);
+    }
+
 	private void CreateBoard (float xOffset, float yOffset) {
 		nodes = new GameObject[xSize, ySize];
 

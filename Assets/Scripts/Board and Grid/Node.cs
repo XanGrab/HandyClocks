@@ -5,7 +5,7 @@ using UnityEngine;
 public class Node : MonoBehaviour
 {
     public Vector2 pos => transform.position;
-	public Clock clockPrefab;
+	public GameObject clockPrefab;
 
 	private Clock clock;
 	private static Node previousSelected;
@@ -27,13 +27,13 @@ public class Node : MonoBehaviour
 
 	private void Select() {
 		isSelected = true;
-		clock.GetComponent<Clock>().Select();
+        if(clock) clock.GetComponent<Clock>().Select();
 		previousSelected = this;
 	}
 
 	private void Deselect() {
 		isSelected = false;
-		clock.GetComponent<Clock>().Deselect();
+        if(clock) clock.GetComponent<Clock>().Deselect();
 		previousSelected = null;
 	}
 
@@ -51,10 +51,10 @@ public class Node : MonoBehaviour
 				Select();
 			}else{
 				if (GetAllAdjacentTiles().Contains(previousSelected.gameObject)) {
-					SwapOrMergeClock(previousSelected.clock);
-					//previousSelected.ClearAllMatches();
+                    if(previousSelected.clock){
+					    SwapOrMergeClock(previousSelected.clock);
+                    }
 					previousSelected.Deselect();
-					//ClearAllMatches();
 				} else {
 					previousSelected.Deselect();
 					Select();
@@ -82,33 +82,7 @@ public class Node : MonoBehaviour
 		return adjacentTiles;
 	}
 	
-	private List<GameObject> FindMatch(Vector2 castDir) {
-		List<GameObject> matchingTiles = new List<GameObject>(); 
-		RaycastHit2D hit = Physics2D.Raycast(transform.position, castDir);
-		//TODO: Matching
-		//while (hit.collider != null && (int)hit.collider.GetComponent<Tile>().color == color) {
-			//matchingTiles.Add(hit.collider.gameObject);
-			//hit = Physics2D.Raycast(hit.collider.transform.position, castDir);
-		//}
-		return matchingTiles;
-	}
-
-	private void ClearMatch(Vector2[] paths) {
-		List<GameObject> matchingTiles = new List<GameObject>();
-		for (int i = 0; i < paths.Length; i++) {
-			matchingTiles.AddRange(FindMatch(paths[i]));
-		}
-		if (matchingTiles.Count >= 2) {
-			for (int i = 0; i < matchingTiles.Count; i++) {
-				//Debug.Log(name+"("+color+") popped.");
-				//matchingTiles[i].GetComponent<Animator>().SetBool("Pop", true);
-				matchingTiles[i].GetComponent<SpriteRenderer>().enabled = false;
-			}
-			matchFound = true;
-		}
-	}
-	
-	public void SwapOrMergeClock(Clock other) { // 1
+	public void SwapOrMergeClock(Clock other) {
 		bool merge = true;
 		if(other.info.min > 1 && clock.info.min > 1){
 			merge = false;
@@ -122,14 +96,14 @@ public class Node : MonoBehaviour
 
 		if(merge){
 			clock.mergeClocks(other);
-		    Destroy(other);
+		    Destroy(other.gameObject);
 		}else{
             SwapClock(other);
 		}
 		//TODO: Add SFX
 	}	
 
-	public void SwapClock(Clock other) { // 1
+	public void SwapClock(Clock other) {
 		Node otherNode = other.transform.parent.GetComponent<Node>();
 
         Vector3 tempPos = other.transform.position;
@@ -146,7 +120,7 @@ public class Node : MonoBehaviour
 		this.clock = tempClock;
 
         // TODO: Check this logic
-		Clock temp = otherNode.clockPrefab;
+		GameObject temp = otherNode.clockPrefab;
 		otherNode.clockPrefab = this.clockPrefab;
 		this.clockPrefab = temp;
 

@@ -4,11 +4,11 @@
 
 //using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine.UI;
+// using UnityEngine.InputSystem;
+// using System.Collections;
+// using System.Collections.Generic;
+// using Unity.VisualScripting;
+// using UnityEngine.UI;
 
 public class Clock : MonoBehaviour {
 
@@ -110,6 +110,11 @@ public class Clock : MonoBehaviour {
 	
 		animator.SetInteger("Color", 3);
 		UpdateVisuals();
+        if(other.info.min > 1 && other.info.hour > 0 && other.info.gear){
+            //TODO: Diaply Time
+            Debug.Log("I should display my time");
+            // BoardManager.DisplayTime(this.transform.position, info);
+        }
 		//StartCoroutine(HandyBoardManager.instance.FindNullTiles());
 	}
 
