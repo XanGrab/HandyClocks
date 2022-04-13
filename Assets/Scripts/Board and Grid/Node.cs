@@ -27,19 +27,28 @@ public class Node : MonoBehaviour
 
 	private void Select() {
 		isSelected = true;
-        if(clock) clock.GetComponent<Clock>().Select();
+        if(clock){
+            clock.GetComponent<Clock>().Select();
+		    Debug.Log("Tile" + gameObject.transform.position + " selected!");
+            Reporter.ReportSelect(clock);
+        }
 		previousSelected = this;
 	}
 
 	private void Deselect() {
+	Debug.Log("Tile" + gameObject.transform.position + " deselected!");
 		isSelected = false;
-        if(clock) clock.GetComponent<Clock>().Deselect();
+        if(clock){
+            clock.GetComponent<Clock>().Deselect();
+		    Debug.Log("Tile" + gameObject.transform.position + " delected!");
+            Reporter.ReportDeselect(clock);
+        }
 		previousSelected = null;
 	}
 
 	public void Touch()
 	{ 
-		Debug.Log("Tile" + gameObject.transform.position + " touched!");
+		// Debug.Log("Tile" + gameObject.transform.position + " touched!");
 		if(BoardManager.instance.IsShifting){
 			return;
 		}
@@ -95,6 +104,7 @@ public class Node : MonoBehaviour
 		}
 
 		if(merge){
+            Reporter.ReportMerge(clock);
 			clock.mergeClocks(other);
 		    Destroy(other.gameObject);
 		}else{
@@ -126,6 +136,5 @@ public class Node : MonoBehaviour
 
 		clockPrefab.name = gameObject.transform.parent.name + " Clock";
 		other.name = other.transform.parent.name + " Clock";
-	}
-	
+	}	
 }

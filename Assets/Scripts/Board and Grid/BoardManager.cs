@@ -82,7 +82,6 @@ public class BoardManager : MonoBehaviour {
 				nodes[x, y] = newClock;
 				newClock.transform.parent = transform;
 				newClock.name = "Tile(" + x + ", " + y + ")";
-
 			}
 		}
     }
