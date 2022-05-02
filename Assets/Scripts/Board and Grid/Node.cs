@@ -26,50 +26,47 @@ public class Node : MonoBehaviour
     }
 
 	private void Select() {
-		isSelected = true;
-        if(clock){
-            clock.GetComponent<Clock>().Select();
-		    Debug.Log("Tile" + gameObject.transform.position + " selected!");
-            Reporter.ReportSelect(clock);
-        }
-		previousSelected = this;
+        Debug.Log(gameObject.name + ": selected!");
+        isSelected = true;
+        clock.GetComponent<Clock>().Select();
+        Reporter.ReportSelect(clock);
+        previousSelected = this;
 	}
 
 	private void Deselect() {
-	Debug.Log("Tile" + gameObject.transform.position + " deselected!");
-		isSelected = false;
-        if(clock){
-            clock.GetComponent<Clock>().Deselect();
-		    Debug.Log("Tile" + gameObject.transform.position + " delected!");
-            Reporter.ReportDeselect(clock);
-        }
-		previousSelected = null;
+        Debug.Log(gameObject.name + ": deselected!");
+        isSelected = false;
+        clock.GetComponent<Clock>().Deselect();
+        Reporter.ReportDeselect(clock);
+        previousSelected = null;
 	}
 
-	public void Touch()
-	{ 
-		// Debug.Log("Tile" + gameObject.transform.position + " touched!");
+	public void Touch()	{ 
 		if(BoardManager.instance.IsShifting){
 			return;
 		}
 
-		if(isSelected){
-			Deselect();
-		}else{
-			if(previousSelected == null){ 
-				Select();
-			}else{
-				if (GetAllAdjacentTiles().Contains(previousSelected.gameObject)) {
-                    if(previousSelected.clock){
-					    SwapOrMergeClock(previousSelected.clock);
+        if(clock){
+            if(isSelected){
+                Deselect();
+            }else{
+                if(previousSelected == null){ 
+                    Select();
+                }else{
+                    if (GetAllAdjacentTiles().Contains(previousSelected.gameObject)) {
+                        if(previousSelected.clock){
+                            SwapOrMergeClock(previousSelected.clock);
+                        }
+                        previousSelected.Deselect();
+                    } else {
+                        previousSelected.Deselect();
+                        Select();
                     }
-					previousSelected.Deselect();
-				} else {
-					previousSelected.Deselect();
-					Select();
-				}
-			}
-		}
+                }
+            }
+        }else{
+            Debug.Log(gameObject.name + ": I don't have a clock!");
+        }
 	}
 
 	/**
