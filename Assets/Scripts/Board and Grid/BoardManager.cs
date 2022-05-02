@@ -2,13 +2,9 @@
  * Copyright (c) 2017 Razeware LLC - Jeff Fisher
  */
 
-// using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
-// using System.Collections.Generic;
-// using UnityEditor;
-// using Random = UnityEngine.Random;
 
 public class BoardManager : MonoBehaviour {
 	public static BoardManager instance;
