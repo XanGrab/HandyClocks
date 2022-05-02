@@ -2,13 +2,7 @@
  * Copyright (c) 2017 Razeware LLC - Jeff Fisher
  */
 
-//using System;
 using UnityEngine;
-// using UnityEngine.InputSystem;
-// using System.Collections;
-// using System.Collections.Generic;
-// using Unity.VisualScripting;
-// using UnityEngine.UI;
 
 public class Clock : MonoBehaviour {
 
@@ -32,10 +26,12 @@ public class Clock : MonoBehaviour {
 	}
 
 	public void Select() {
+        // Debug.Log($"{gameObject.name}: selected!");
 		visuals.GetComponent<SpriteRenderer>().color = selectedColor;
 	}
 
 	public void Deselect() {
+        // Debug.Log($"{gameObject.name}: deselected!");
 		visuals.GetComponent<SpriteRenderer>().color = Color.white;
 	}
 

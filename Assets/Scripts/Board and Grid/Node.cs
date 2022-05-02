@@ -1,11 +1,11 @@
-using System.Collections;
+// using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Node : MonoBehaviour
-{
+public class Node : MonoBehaviour, IPointerEnterHandler {
     public Vector2 pos => transform.position;
-	public GameObject clockPrefab;
+	[SerializeField] private GameObject _clock;
 
 	private Clock clock;
 	private static Node previousSelected;
@@ -13,20 +13,19 @@ public class Node : MonoBehaviour
 	private bool isSelected;
 
 	private Vector2[] adjacentDirections = new Vector2[] { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
-	private bool matchFound;
+	// private bool matchFound;
 
     /**
      * Each Node object will make itself a default Clock obj
      */
     void Start(){
-		clockPrefab = Instantiate(clockPrefab, pos, Quaternion.identity);
-		clockPrefab.name = gameObject.name + " Clock";
-		clockPrefab.transform.parent = transform;
-        clock = clockPrefab.GetComponent<Clock>(); 
+		_clock = Instantiate(_clock, pos, Quaternion.identity);
+		_clock.name = $"{gameObject.name}'s Clock";
+		_clock.transform.parent = transform;
+        clock = _clock.GetComponent<Clock>(); 
     }
 
 	private void Select() {
-        Debug.Log(gameObject.name + ": selected!");
         isSelected = true;
         clock.GetComponent<Clock>().Select();
         Reporter.ReportSelect(clock);
@@ -34,21 +33,23 @@ public class Node : MonoBehaviour
 	}
 
 	private void Deselect() {
-        Debug.Log(gameObject.name + ": deselected!");
         isSelected = false;
         clock.GetComponent<Clock>().Deselect();
         Reporter.ReportDeselect(clock);
         previousSelected = null;
 	}
 
+	public void OnPointerEnter(PointerEventData data) {
+		Debug.Log($"{name} entered!");
+		// StartCoroutine(BoardManager.ScaleMe(transform));
+	}
+
 	public void Touch()	{ 
-		if(BoardManager.instance.IsShifting){
-			return;
-		}
+		if(BoardManager.instance.IsShifting) return;
 
         if(clock){
             if(isSelected){
-                Deselect();
+				Deselect();
             }else{
                 if(previousSelected == null){ 
                     Select();
@@ -65,7 +66,10 @@ public class Node : MonoBehaviour
                 }
             }
         }else{
-            Debug.Log(gameObject.name + ": I don't have a clock!");
+            Debug.Log($"{gameObject.name} : I don't have a clock!");
+            if(previousSelected != null){
+            	Debug.Log($"Break clock: {previousSelected.name}!");
+			} 
         }
 	}
 
@@ -90,21 +94,23 @@ public class Node : MonoBehaviour
 	
 	public void SwapOrMergeClock(Clock other) {
 		bool merge = true;
-		if(other.info.min > 1 && clock.info.min > 1){
+		if (other.info.min > -1 && clock.info.min > -1){
 			merge = false;
 		}
-		if(other.info.hour > 0 && clock.info.hour > 0){
+		if (other.info.hour > 0 && clock.info.hour > 0){
 			merge = false;
 		}
-		if(other.info.gear && clock.info.gear){
+		if (other.info.gear && clock.info.gear){
 			merge = false;
 		}
 
 		if(merge){
+			Debug.Log($"[Debug] Merge: {this.clock} & {other}");
             Reporter.ReportMerge(clock);
 			clock.mergeClocks(other);
 		    Destroy(other.gameObject);
 		}else{
+			Debug.Log($"[Debug] Swap: {this.clock} & {other}");
             SwapClock(other);
 		}
 		//TODO: Add SFX
@@ -113,25 +119,21 @@ public class Node : MonoBehaviour
 	public void SwapClock(Clock other) {
 		Node otherNode = other.transform.parent.GetComponent<Node>();
 
-        Vector3 tempPos = other.transform.position;
-        other.transform.position = clock.transform.position;
-        clock.transform.position = tempPos;
+		otherNode.clock.transform.position = this.pos;
+		this.clock.transform.position = otherNode.pos;
 
         // Update in Hierarchy
-        Transform parent = other.transform.parent;
-		other.transform.parent = clockPrefab.transform.parent;
-		other.transform.parent = parent;
-		
-		Clock tempClock = other;
-		otherNode.clock = this.clock;
-		this.clock = tempClock;
+		otherNode.clock.transform.SetParent(transform);
+		this.clock.transform.SetParent(otherNode.transform);
 
-        // TODO: Check this logic
-		GameObject temp = otherNode.clockPrefab;
-		otherNode.clockPrefab = this.clockPrefab;
-		this.clockPrefab = temp;
+		Clock temp = this.clock;
+		this.clock = otherNode.clock;
+		otherNode.clock = temp;
 
-		clockPrefab.name = gameObject.transform.parent.name + " Clock";
-		other.name = other.transform.parent.name + " Clock";
+		// otherNode.clock.Deselect();
+		this.clock.Deselect();
+
+		otherNode.clock.name = $"{otherNode.name}'s Clock";
+		this.clock.name = $"{this}'s Clock";
 	}	
 }
