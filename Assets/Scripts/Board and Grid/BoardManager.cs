@@ -84,7 +84,6 @@ public class BoardManager : MonoBehaviour {
         GameObject popup = Instantiate(displayInstance, position, Quaternion.identity);
         popup.GetComponent<DisplayValue>().ShowTime(position, time);
     }
-
 }
 
 public struct ClockType{

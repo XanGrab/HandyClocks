@@ -68,7 +68,10 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
         }else{
             Debug.Log($"{gameObject.name} : I don't have a clock!");
             if(previousSelected != null){
-            	Debug.Log($"Break clock: {previousSelected.name}!");
+				previousSelected.clock.printInfo();
+				if(clock.isCompound()){
+					Debug.Log($"Break clock: {previousSelected.name}!");
+				}
 			} 
         }
 	}

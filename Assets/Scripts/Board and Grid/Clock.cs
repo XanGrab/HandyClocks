@@ -35,6 +35,22 @@ public class Clock : MonoBehaviour {
 		visuals.GetComponent<SpriteRenderer>().color = Color.white;
 	}
 
+	public void resetClock(){
+		gameObject.GetComponent<SpriteRenderer>().enabled = true;
+		initClock();
+	}
+
+	public bool isCompound(){
+		if((info.hour > 0) && (info.min > -1 || info.gear)) return true;
+		if((info.gear) && (info.min > -1 || info.hour > 0)) return true;
+		if((info.min > -1) && (info.hour > 0 || info.gear)) return true;
+		return false;
+	}
+	
+	public void printInfo(){
+		Debug.Log($"[Debug]{this.name} info: {info.hour}:{info.min}[{info.gear}]");
+	}
+
 	private void initClock(){
 		info.hour = 0;
 		info.min = -1;
@@ -51,7 +67,7 @@ public class Clock : MonoBehaviour {
 			info.min = Random.Range(0, 12) * 5;
 			animator.SetInteger("Color", 2);
 			break;
-			case 2:
+			default:
 			info.gear = true;
 			break;
 		}
@@ -115,9 +131,5 @@ public class Clock : MonoBehaviour {
 		//StartCoroutine(HandyBoardManager.instance.FindNullTiles());
 	}
 
-	public void resetClock(){
-		gameObject.GetComponent<SpriteRenderer>().enabled = true;
-		initClock();
-	}
 
 }
