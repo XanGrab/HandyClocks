@@ -87,8 +87,9 @@ public class Clock : MonoBehaviour {
 		if(info.min < 0){
 			MinHand.gameObject.SetActive(false);
 		}else{
+			MinHand.transform.rotation = Quaternion.identity;
 			MinHand.SetActive(true);
-			MinHand.transform.Rotate(0.0f, 0.0f, info.min * 30.0f, Space.Self);
+			MinHand.transform.Rotate(0.0f, 0.0f, (info.min/5) * -30, Space.Self);
 			if(!Face.activeSelf) Face.SetActive(true);
 			Face.GetComponent<SpriteRenderer>().sprite = minNums;
 		}
@@ -96,8 +97,9 @@ public class Clock : MonoBehaviour {
 		if(info.hour < 1){
 			HourHand.SetActive(false);
 		}else{
+			HourHand.transform.rotation = Quaternion.identity;
 			HourHand.SetActive(true);
-			HourHand.transform.Rotate(0.0f, 0.0f,info.hour * 30.0f, Space.Self);
+			HourHand.transform.Rotate(0.0f, 0.0f, info.hour * -30, Space.Self);
 			if(!Face.activeSelf) Face.SetActive(true);
 			Face.GetComponent<SpriteRenderer>().sprite = hrNums;
 		}
@@ -110,7 +112,7 @@ public class Clock : MonoBehaviour {
 	}
 
 	public void mergeClocks(Clock other){
-		if(other.info.min > 1){
+		if(other.info.min > -1){
 			info.min = other.info.min;
 		}
 		if(other.info.hour > 0){
