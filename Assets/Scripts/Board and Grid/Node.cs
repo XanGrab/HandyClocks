@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class Node : MonoBehaviour, IPointerEnterHandler {
     public Vector2 pos => transform.position;
-	[SerializeField] private GameObject _clock;
+	[SerializeField] private Clock _clockPrefab;
 
 	private Clock clock;
 	private static Node previousSelected;
@@ -19,22 +19,21 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
      * Each Node object will make itself a default Clock obj
      */
     void Start(){
-		_clock = Instantiate(_clock, pos, Quaternion.identity);
-		_clock.name = $"{gameObject.name}'s Clock";
-		_clock.transform.parent = transform;
-        clock = _clock.GetComponent<Clock>(); 
+		clock = Instantiate(_clockPrefab, pos, Quaternion.identity);
+		clock.name = $"{gameObject.name}'s Clock";
+		clock.transform.parent = transform;
     }
 
 	private void Select() {
         isSelected = true;
-        clock.GetComponent<Clock>().Select();
+        clock.Select();
         Reporter.ReportSelect(clock);
         previousSelected = this;
 	}
 
 	private void Deselect() {
         isSelected = false;
-        clock.GetComponent<Clock>().Deselect();
+        clock.Deselect();
         Reporter.ReportDeselect(clock);
         previousSelected = null;
 	}
@@ -55,9 +54,8 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
                     Select();
                 }else{
                     if (GetAllAdjacentTiles().Contains(previousSelected.gameObject)) {
-                        if(previousSelected.clock){
+                        if(previousSelected.clock)
                             SwapOrMergeClock(previousSelected.clock);
-                        }
                         previousSelected.Deselect();
                     } else {
                         previousSelected.Deselect();
@@ -67,11 +65,8 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
             }
         }else{
             Debug.Log($"{gameObject.name} : I don't have a clock!");
-            if(previousSelected != null){
-				previousSelected.clock.printInfo();
-				if(clock.isCompound()){
-					Debug.Log($"Break clock: {previousSelected.name}!");
-				}
+            if(previousSelected != null && previousSelected.clock.IsCompound()){
+				previousSelected.BreakClock(previousSelected);
 			} 
         }
 	}
@@ -110,7 +105,7 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 		if(merge){
 			Debug.Log($"[Debug] Merge: {this.clock} & {other}");
             Reporter.ReportMerge(clock);
-			clock.mergeClocks(other);
+			clock.MergeClocks(other);
 		    Destroy(other.gameObject);
 		}else{
 			Debug.Log($"[Debug] Swap: {this.clock} & {other}");
@@ -138,5 +133,16 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 
 		otherNode.clock.name = $"{otherNode.name}'s Clock";
 		this.clock.name = $"{this}'s Clock";
-	}	
+	}
+
+	/**
+	* Unmerge a clock back on to the `other` Node
+	*/
+	public void BreakClock(Node other){
+		Debug.Log($"Break clock: {other.name}!");
+		// Make a new clock
+		clock = Instantiate(_clockPrefab, pos, Quaternion.identity);
+		clock.name = $"{gameObject.name}'s Clock";
+		clock.transform.parent = transform;
+	}
 }

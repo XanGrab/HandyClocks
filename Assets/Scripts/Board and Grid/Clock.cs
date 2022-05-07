@@ -22,7 +22,7 @@ public class Clock : MonoBehaviour {
 
 	public void Start()
 	{
-		initClock();
+		InitClock();
 	}
 
 	public void Select() {
@@ -35,23 +35,23 @@ public class Clock : MonoBehaviour {
 		visuals.GetComponent<SpriteRenderer>().color = Color.white;
 	}
 
-	public void resetClock(){
+	public void ResetClock(){
 		gameObject.GetComponent<SpriteRenderer>().enabled = true;
-		initClock();
+		InitClock();
 	}
 
-	public bool isCompound(){
-		if((info.hour > 0) && (info.min > -1 || info.gear)) return true;
-		if((info.gear) && (info.min > -1 || info.hour > 0)) return true;
-		if((info.min > -1) && (info.hour > 0 || info.gear)) return true;
+	public bool IsCompound(){
+		if((info.hour > 0) && ((info.min > -1)|| info.gear)) return true;
+		if((info.gear) && ((info.min > -1) || (info.hour > 0))) return true;
+		if((info.min > -1) && ((info.hour > 0) || info.gear)) return true;
 		return false;
 	}
 	
-	public void printInfo(){
-		Debug.Log($"[Debug]{this.name} info: {info.hour}:{info.min}[{info.gear}]");
+	public void PrintInfo(){
+		Debug.Log($"[Debug]{this.name} info: {info.hour}:{info.min} Gear:[{info.gear}]");
 	}
 
-	private void initClock(){
+	private void InitClock(){
 		info.hour = 0;
 		info.min = -1;
 		info.gear = false;
@@ -111,7 +111,7 @@ public class Clock : MonoBehaviour {
 		}
 	}
 
-	public void mergeClocks(Clock other){
+	public void MergeClocks(Clock other){
 		if(other.info.min > -1){
 			info.min = other.info.min;
 		}
