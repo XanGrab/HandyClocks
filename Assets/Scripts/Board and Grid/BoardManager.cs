@@ -85,9 +85,3 @@ public class BoardManager : MonoBehaviour {
         popup.GetComponent<DisplayValue>().ShowTime(position, time);
     }
 }
-
-public struct ClockType{
-	public int min;
-	public int hour;
-	public bool gear;
-}

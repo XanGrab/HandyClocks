@@ -13,7 +13,6 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 	private bool isSelected;
 
 	private Vector2[] adjacentDirections = new Vector2[] { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
-	// private bool matchFound;
 
     /**
      * Each Node object will make itself a default Clock obj
@@ -25,6 +24,7 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
     }
 
 	private void Select() {
+		clock.PrintInfo();
         isSelected = true;
         clock.Select();
         Reporter.ReportSelect(clock);
@@ -40,7 +40,6 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 
 	public void OnPointerEnter(PointerEventData data) {
 		Debug.Log($"{name} entered!");
-		// StartCoroutine(BoardManager.ScaleMe(transform));
 	}
 
 	public void Touch()	{ 
@@ -66,7 +65,10 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
         }else{
             Debug.Log($"{gameObject.name} : I don't have a clock!");
             if(previousSelected != null && previousSelected.clock.IsCompound()){
-				previousSelected.BreakClock(previousSelected);
+				BreakClock(previousSelected);
+				Debug.Log("Returning from call");
+				previousSelected.Deselect();
+				// clock.PrintInfo();
 			} 
         }
 	}
@@ -139,10 +141,28 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 	* Unmerge a clock back on to the `other` Node
 	*/
 	public void BreakClock(Node other){
-		Debug.Log($"Break clock: {other.name}!");
+		// Debug.Log($"Break clock! empty");
 		// Make a new clock
 		clock = Instantiate(_clockPrefab, pos, Quaternion.identity);
-		clock.name = $"{gameObject.name}'s Clock";
+		clock.name = $"{name}'s Clock";
 		clock.transform.parent = transform;
+		// clock.PrintInfo();
+
+		// Cut and paste a field from other's clock info
+		ClockType newInfo = new ClockType();
+		if(other.clock.info.min > -1){
+			newInfo.min = other.clock.info.min;
+			other.clock.info.min = -1;
+		}else{
+			newInfo.hour = other.clock.info.hour;
+			other.clock.info.hour = 0;
+			newInfo.min = -1;
+		}
+		clock.info = newInfo;
+		// clock.PrintInfo();
+
+		clock.UpdateVisuals();
+		other.clock.UpdateVisuals();
+		SwapClock(other.clock);
 	}
 }

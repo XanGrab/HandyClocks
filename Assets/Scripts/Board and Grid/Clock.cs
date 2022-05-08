@@ -18,10 +18,6 @@ public class Clock : MonoBehaviour {
 	void Awake() {
 		visuals = gameObject.transform.GetChild(0);
 		animator = visuals.GetComponent<Animator>();
-	}
-
-	public void Start()
-	{
 		InitClock();
 	}
 
@@ -72,6 +68,7 @@ public class Clock : MonoBehaviour {
 			break;
 		}
 		UpdateVisuals();
+		Debug.Log($"FInished Init for clock {name}");
 	}
 
 	public void UpdateVisuals(){
@@ -92,6 +89,7 @@ public class Clock : MonoBehaviour {
 			MinHand.transform.Rotate(0.0f, 0.0f, (info.min/5) * -30, Space.Self);
 			if(!Face.activeSelf) Face.SetActive(true);
 			Face.GetComponent<SpriteRenderer>().sprite = minNums;
+			animator.SetInteger("Color", 2);
 		}
 
 		if(info.hour < 1){
@@ -102,12 +100,18 @@ public class Clock : MonoBehaviour {
 			HourHand.transform.Rotate(0.0f, 0.0f, info.hour * -30, Space.Self);
 			if(!Face.activeSelf) Face.SetActive(true);
 			Face.GetComponent<SpriteRenderer>().sprite = hrNums;
+			animator.SetInteger("Color", 1);
 		}
 
 		if(!info.gear){
 			Gear.SetActive(false);
 		}else{
 			Gear.SetActive(true);
+			animator.SetInteger("Color", 0);
+		}
+
+		if(IsCompound()){
+			animator.SetInteger("Color", 3);
 		}
 	}
 
@@ -132,6 +136,10 @@ public class Clock : MonoBehaviour {
         }
 		//StartCoroutine(HandyBoardManager.instance.FindNullTiles());
 	}
+}
 
-
+public struct ClockType{
+	public int min;
+	public int hour;
+	public bool gear;
 }
