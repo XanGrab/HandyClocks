@@ -11,10 +11,12 @@ public class BoardManager : MonoBehaviour {
 	private SpriteRenderer bg;
     public static GameObject displayInstance;
 
-	public GameObject tile;
+	[SerializeField] private Node _nodePrefab;
+	[SerializeField] private Clock _clockPrefab;
 	public int xSize, ySize;
 
-	private GameObject[,] nodes;
+	private Node[,] nodes;
+	private Clock target;
 
 	public bool IsShifting { get; set; }
 
@@ -22,12 +24,12 @@ public class BoardManager : MonoBehaviour {
 		instance = this;
 		bg = GetComponent<SpriteRenderer>();
 
-		Vector2 offset = tile.GetComponentInChildren<SpriteRenderer>().bounds.size;
+		Vector2 offset = _nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size;
         CreateBoard(offset.x, offset.y);
     }
 
 	private void CreateBoard (float xOffset, float yOffset) {
-		nodes = new GameObject[xSize, ySize];
+		nodes = new Node[xSize, ySize];
 
         float startX = transform.position.x - (bg.bounds.extents.x * 0.75f);
 		float startY = transform.position.y - (bg.bounds.extents.y * 0.75f);
@@ -36,13 +38,16 @@ public class BoardManager : MonoBehaviour {
 
 		for (int x = 0; x < xSize; x++) {
 			for (int y = 0; y < ySize; y++) {
-				GameObject newNode = Instantiate(tile, new Vector3(startX + (xOffset * x), startY + (yOffset * y), 0), tile.transform.rotation);
+				Node newNode = Instantiate(_nodePrefab, new Vector3(startX + (xOffset * x), startY + (yOffset * y), 0), _nodePrefab.transform.rotation);
 				
 				nodes[x, y] = newNode;
 				newNode.transform.parent = transform;
 				newNode.name = $"Tile({x},{y})";
 			}
 		}
+
+		target = Instantiate(_clockPrefab, new Vector3(startX + (xOffset * xSize * 1.25f), startY + (yOffset * ySize * 0.4f), 0), Quaternion.identity);
+		target.transform.localScale = new Vector3(2.5f, 2.5f, 2.5f);
     }
 
 	public void OnTouch(InputAction.CallbackContext ctx){
@@ -84,4 +89,11 @@ public class BoardManager : MonoBehaviour {
         GameObject popup = Instantiate(displayInstance, position, Quaternion.identity);
         popup.GetComponent<DisplayValue>().ShowTime(position, time);
     }
+
+	/**
+	*  
+	*/
+	public void SetTarget(){
+		
+	}
 }
