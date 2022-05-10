@@ -14,10 +14,11 @@ public class BoardManager : MonoBehaviour {
 
 	[SerializeField] private Node _nodePrefab;
 	[SerializeField] private Clock _clockPrefab;
+	[SerializeField] private DisplayValue _display;
 	public int xSize, ySize;
 
-	private Node[,] nodes;
-	private Clock target;
+	private Node[,] nodes = null;
+	public static Clock target;
 
 	public bool IsShifting { get; set; }
 
@@ -36,12 +37,9 @@ public class BoardManager : MonoBehaviour {
 		target.transform.localScale = new Vector3(2.5f, 2.5f, 2.5f);
 		target.transform.parent = transform;
 		target.name = $"Target Clock";
-
-		nodes = new Node[xSize, ySize];
 	}
 
 	void Start () {
-        // CreateBoard(startX, startY, offset.x, offset.y);
 		SetTarget();
     }
 
@@ -80,8 +78,11 @@ public class BoardManager : MonoBehaviour {
 	}
 
 	private void CreateBoard (float startX, float startY, float xOffset, float yOffset) {
-		if(nodes.Length != 0)
-			foreach (Node node in nodes) Destroy(node); // Clear the nodes if there is anything in it.
+		if(nodes != null) {
+			Debug.Log($"nodes.length is {nodes.Length}");
+			foreach (Node node in nodes) Destroy(node.gameObject); // Clear the nodes if there is anything in it.
+		}
+		nodes = new Node[xSize, ySize];
 
 		int[] prevLeft = new int[ySize];
 		for (int x = 0; x < xSize; x++) {
@@ -96,8 +97,7 @@ public class BoardManager : MonoBehaviour {
     }
 
 	public void OnTouch(InputAction.CallbackContext ctx){
-		if(ctx.started)
-		{
+		if(ctx.started) {
 			Camera mainCam = Camera.main;
 			Vector2 pointerPos = Mouse.current.position.ReadValue();
 			pointerPos = mainCam.ScreenToWorldPoint(pointerPos);
@@ -128,8 +128,9 @@ public class BoardManager : MonoBehaviour {
     /**
     * This method displays the a point value
     */
-    public void DisplayTime(Vector3 position, ClockType time){
-        GameObject popup = Instantiate(displayInstance, position, Quaternion.identity);
-        popup.GetComponent<DisplayValue>().ShowTime(position, time);
+    public IEnumerator DisplayTime(Vector3 position, ClockType time){
+        DisplayValue popup = Instantiate(_display, position, Quaternion.identity);
+        popup.ShowTime(position, time);
+		yield return new WaitForSeconds(1f);
     }
 }

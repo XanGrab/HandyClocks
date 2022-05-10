@@ -5,7 +5,6 @@
 using UnityEngine;
 
 public class Clock : MonoBehaviour {
-
 	//[SerializeField]
 	public Sprite minNums;
 	public Sprite hrNums;

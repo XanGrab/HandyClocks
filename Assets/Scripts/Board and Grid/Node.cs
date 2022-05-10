@@ -1,4 +1,4 @@
-// using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -44,32 +44,35 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 	public void Touch()	{ 
 		if(BoardManager.instance.IsShifting) return;
 
-        if(clock){
-            if(isSelected){
-				Deselect();
-            }else{
-                if(previousSelected == null){ 
-                    Select();
-                }else{
-                    if (GetAllAdjacentTiles().Contains(previousSelected.gameObject)) {
-                        if(previousSelected.clock)
-                            SwapOrMergeClock(previousSelected.clock);
-                        previousSelected.Deselect();
-                    } else {
-                        previousSelected.Deselect();
-                        Select();
-                    }
-                }
-            }
-        }else{
+		if(!clock){
             Debug.Log($"{gameObject.name} : I don't have a clock!");
             if(previousSelected != null && previousSelected.clock.IsCompound()){
 				BreakClock(previousSelected);
-				Debug.Log("Returning from call");
 				previousSelected.Deselect();
-				// clock.PrintInfo();
 			} 
-        }
+			return;
+		}
+
+		if(isSelected){
+			Deselect();
+		}else{
+			if(previousSelected == null){ 
+				if (clock.info.Equals(BoardManager.target.info)){
+					StartCoroutine(Score());
+				}
+	
+				Select();
+			}else{
+				if (GetAllAdjacentTiles().Contains(previousSelected.gameObject)) {
+					if(previousSelected.clock)
+						SwapOrMergeClock(previousSelected.clock);
+					previousSelected.Deselect();
+				} else {
+					previousSelected.Deselect();
+					Select();
+				}
+			}
+		}
 	}
 
 	/**
@@ -163,5 +166,10 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 		clock.UpdateVisuals();
 		other.clock.UpdateVisuals();
 		SwapClock(other.clock);
+	}
+
+	IEnumerator Score(){
+		yield return StartCoroutine(BoardManager.instance.DisplayTime(pos, clock.info));
+		BoardManager.instance.SetTarget();
 	}
 }
