@@ -68,7 +68,7 @@ public class Clock : MonoBehaviour {
 			break;
 		}
 		UpdateVisuals();
-		Debug.Log($"FInished Init for clock {name}");
+		// Debug.Log($"FInished Init for clock {name}");
 	}
 
 	public void UpdateVisuals(){
