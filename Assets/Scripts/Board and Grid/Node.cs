@@ -7,21 +7,20 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
     public Vector2 pos => transform.position;
 	[SerializeField] private Clock _clockPrefab;
 
-	private Clock clock;
+	public Clock clock;
 	private static Node previousSelected;
 
 	private bool isSelected;
-
 	private Vector2[] adjacentDirections = new Vector2[] { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
 
     /**
      * Each Node object will make itself a default Clock obj
      */
-    void Start(){
+    private void Awake() {
 		clock = Instantiate(_clockPrefab, pos, Quaternion.identity);
 		clock.name = $"{gameObject.name}'s Clock";
 		clock.transform.parent = transform;
-    }
+	}
 
 	private void Select() {
 		clock.PrintInfo();
