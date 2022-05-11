@@ -37,7 +37,7 @@ public class BoardManager : MonoBehaviour {
 		float correctPosX = aspectRatio * camSize;
 
 		offset = _nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size;
-        startX = 0 - (correctPosX * 0.85f);
+        startX = 0 - (correctPosX * 0.78f);
 		startY = 0 - (camSize * 0.9f);
 
 		target = Instantiate(_clockPrefab, new Vector3(startX + (offset.x * xSize * 1.25f), startY + (offset.y * ySize * 0.3f), 0), Quaternion.identity);
