@@ -124,12 +124,8 @@ public class Clock : MonoBehaviour {
 		animator.SetInteger("Color", 3);
 		UpdateVisuals();
         if(other.info.min > 1 && other.info.hour > 0 && other.info.gear){
-            //TODO: Diaply Time
             Debug.Log("I should display my time");
-            // Reporter.ReportMadeTime(this);
-            // BoardManager.DisplayTime(this.transform.position, info);
         }
-		//StartCoroutine(HandyBoardManager.instance.FindNullTiles());
 	}
 }
 

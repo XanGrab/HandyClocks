@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
@@ -27,10 +28,9 @@ public class BoardManager : MonoBehaviour {
 	void Awake(){
 		instance = this;
 		camera = Camera.main;
-		// bg = GetComponent<SpriteRenderer>();
-		float aspectRatio = camera.aspect; //(width divided by height)
-		float camSize = camera.orthographicSize; //The size value mentioned earlier
-		float correctPosX = aspectRatio * camSize;
+		float aspectRatio = camera.aspect; // width divided by height
+		float camSize = camera.orthographicSize; // get cam size
+		float correctPosX = aspectRatio * camSize; // this will find the left most x size
 
 		offset = _nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size;
         startX = 0 - (correctPosX * 0.78f);
@@ -74,9 +74,9 @@ public class BoardManager : MonoBehaviour {
 
 		// Debug.Log($"[Debug] {mins.Count}");
 		ClockType targetInfo = new ClockType();
-		targetInfo.min = mins[Random.Range(0, mins.Count)];
-		targetInfo.hour = hours[Random.Range(0, hours.Count)];
-		targetInfo.gear = gears[Random.Range(0, gears.Count)];
+		targetInfo.min = mins[UnityEngine.Random.Range(0, mins.Count)];
+		targetInfo.hour = hours[UnityEngine.Random.Range(0, hours.Count)];
+		targetInfo.gear = gears[UnityEngine.Random.Range(0, gears.Count)];
 
 		target.info = targetInfo;
 		target.UpdateVisuals();
@@ -89,7 +89,7 @@ public class BoardManager : MonoBehaviour {
 		}
 		nodes = new Node[xSize, ySize];
 
-		int[] prevLeft = new int[ySize];
+		// int[] prevLeft = new int[ySize];
 		for (int x = 0; x < xSize; x++) {
 			for (int y = 0; y < ySize; y++) {
 				Node newNode = Instantiate(_nodePrefab, new Vector3(startX + (xOffset * x), startY + (yOffset * y), 0), _nodePrefab.transform.rotation);
@@ -101,7 +101,12 @@ public class BoardManager : MonoBehaviour {
 		}
     }
 
-	public void OnEsc(){ SceneManager.LoadScene("Start Menu"); }
+	public void OnEsc(){ 
+        try {
+            FindObjectOfType<AudioManager>().Play("Button");
+        } catch (Exception e) {};
+        SceneManager.LoadScene("Start Menu");
+    }
 
 	public void OnTouch(InputAction.CallbackContext ctx){
 		if(ctx.started) {

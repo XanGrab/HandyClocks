@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Node : MonoBehaviour, IPointerEnterHandler {
+public class TutNode : MonoBehaviour, IPointerEnterHandler {
     public Vector2 pos => transform.position;
 	[SerializeField] private Clock _clockPrefab;
 
 	[HideInInspector] public Clock clock;
-	private static Node previousSelected;
+	private static TutNode previousSelected;
 
 	private bool isSelected;
 	private Vector2[] adjacentDirections = new Vector2[] { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
@@ -42,8 +42,6 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 	}
 
 	public void Touch()	{ 
-		// if(BoardManager.instance.IsShifting) return;
-
 		if(!clock){
             Debug.Log($"{gameObject.name} : I don't have a clock!");
             if(previousSelected != null && previousSelected.clock.IsCompound()){
@@ -57,9 +55,7 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 			Deselect();
 		}else{
 			if(previousSelected == null){ 
-				if (clock.info.Equals(BoardManager.target.info)) {
-					StartCoroutine(Score());
-				}else if(clock.info.min > -1 && clock.info.hour > 0 && clock.info.gear) {
+				if(clock.info.min > -1 && clock.info.hour > 0 && clock.info.gear) {
 					StartCoroutine(ShowTime());
 				}
 	
@@ -122,7 +118,7 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 	}	
 
 	public void SwapClock(Clock other) {
-		Node otherNode = other.transform.parent.GetComponent<Node>();
+		TutNode otherNode = other.transform.parent.GetComponent<TutNode>();
 
 		otherNode.clock.transform.position = this.pos;
 		this.clock.transform.position = otherNode.pos;
@@ -145,7 +141,7 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 	/**
 	* Unmerge a clock back on to the `other` Node
 	*/
-	public void BreakClock(Node other){
+	public void BreakClock(TutNode other){
 		// Debug.Log($"Break clock! empty");
 		// Make a new clock
 		clock = Instantiate(_clockPrefab, pos, Quaternion.identity);
@@ -164,21 +160,13 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 			newInfo.min = -1;
 		}
 		clock.info = newInfo;
-		// clock.PrintInfo();
 
 		clock.UpdateVisuals();
 		other.clock.UpdateVisuals();
 		SwapClock(other.clock);
 	}
 
-	IEnumerator Score() {
-        // BoardManager.instance.audioManager.Play("Yay" ;
-		FindObjectOfType<AudioManager>().Play("Yay");
-		yield return StartCoroutine(BoardManager.instance.ScoreTime(pos, clock.info));
-		BoardManager.instance.SetTarget();
-	}
-
 	IEnumerator ShowTime(){
-		yield return StartCoroutine(BoardManager.instance.DisplayTime(pos, clock.info));
+		yield return StartCoroutine(Tutorial.instance.DisplayTime(pos, clock.info));
 	}
 }
