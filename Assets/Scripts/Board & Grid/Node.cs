@@ -42,7 +42,7 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 	}
 
 	public void Touch()	{ 
-		if(BoardManager.instance.IsShifting) return;
+		// if(BoardManager.instance.IsShifting) return;
 
 		if(!clock){
             Debug.Log($"{gameObject.name} : I don't have a clock!");

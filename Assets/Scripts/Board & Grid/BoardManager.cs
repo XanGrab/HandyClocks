@@ -1,8 +1,4 @@
-﻿/*
- * Copyright (c) 2017 Razeware LLC - Jeff Fisher
- */
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,7 +18,7 @@ public class BoardManager : MonoBehaviour {
 	private Node[,] nodes = null;
 	public static Clock target;
 
-	public bool IsShifting { get; set; }
+	// public bool IsShifting { get; set; }
 
 	private float startX, startY;
 	private Vector2 offset;
@@ -105,10 +101,7 @@ public class BoardManager : MonoBehaviour {
 		}
     }
 
-	public void OnEsc(){
-		FindObjectOfType<AudioManager>().Play("Button");
-		SceneManager.LoadScene("Start Menu");
-	}
+	public void OnEsc(){ SceneManager.LoadScene("Start Menu"); }
 
 	public void OnTouch(InputAction.CallbackContext ctx){
 		if(ctx.started) {
@@ -130,9 +123,6 @@ public class BoardManager : MonoBehaviour {
 		}
 	}
 
-    /**
-    * This method displays the a point value
-    */
 	public static IEnumerator ScaleMe(Transform objTr) {
 		objTr.localScale *= 1.1f;
 		yield return new WaitForSeconds(0.1f);

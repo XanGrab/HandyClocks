@@ -1,7 +1,3 @@
-/*
- * Copyright (c) 2017 Razeware LLC - Jeff Fisher
- */
-
 using UnityEngine;
 
 public class Clock : MonoBehaviour {
