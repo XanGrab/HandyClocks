@@ -7,11 +7,11 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class BoardManager : MonoBehaviour {
 	public static BoardManager instance;
-	// private SpriteRenderer bg;
-    public static GameObject displayInstance;
+	[SerializeField] private TextMeshProUGUI scoreBoard; 
 	private Camera camera;
 
 	[SerializeField] private Node _nodePrefab;
@@ -26,6 +26,7 @@ public class BoardManager : MonoBehaviour {
 
 	private float startX, startY;
 	private Vector2 offset;
+	private int score = -100;
 
 	void Awake(){
 		instance = this;
@@ -53,6 +54,8 @@ public class BoardManager : MonoBehaviour {
 	* Get a target time for the player 
 	*/
 	public void SetTarget() {
+		score += 100;
+		scoreBoard.text = $"{score}";
 		List<int> mins = new List<int>();	
 		List<int> hours = new List<int>();	
 		List<bool> gears = new List<bool>();	
