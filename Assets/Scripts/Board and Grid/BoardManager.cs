@@ -6,11 +6,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class BoardManager : MonoBehaviour {
 	public static BoardManager instance;
-	private SpriteRenderer bg;
+	// private SpriteRenderer bg;
     public static GameObject displayInstance;
+	private Camera camera;
 
 	[SerializeField] private Node _nodePrefab;
 	[SerializeField] private Clock _clockPrefab;
@@ -27,13 +29,17 @@ public class BoardManager : MonoBehaviour {
 
 	void Awake(){
 		instance = this;
-		bg = GetComponent<SpriteRenderer>();
+		camera = Camera.main;
+		// bg = GetComponent<SpriteRenderer>();
+		float aspectRatio = camera.aspect; //(width divided by height)
+		float camSize = camera.orthographicSize; //The size value mentioned earlier
+		float correctPosX = aspectRatio * camSize;
 
 		offset = _nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size;
-        startX = transform.position.x - (bg.bounds.extents.x * 0.75f);
-		startY = transform.position.y - (bg.bounds.extents.y * 0.75f);
+        startX = 0 - (correctPosX * 0.85f);
+		startY = 0 - (camSize * 0.9f);
 
-		target = Instantiate(_clockPrefab, new Vector3(startX + (offset.x * xSize * 1.25f), startY + (offset.y * ySize * 0.4f), 0), Quaternion.identity);
+		target = Instantiate(_clockPrefab, new Vector3(startX + (offset.x * xSize * 1.25f), startY + (offset.y * ySize * 0.3f), 0), Quaternion.identity);
 		target.transform.localScale = new Vector3(2.5f, 2.5f, 2.5f);
 		target.transform.parent = transform;
 		target.name = $"Target Clock";
@@ -96,6 +102,11 @@ public class BoardManager : MonoBehaviour {
 		}
     }
 
+	public void OnEsc(){
+		FindObjectOfType<AudioManager>().Play("Button");
+		SceneManager.LoadScene("Start Menu");
+	}
+
 	public void OnTouch(InputAction.CallbackContext ctx){
 		if(ctx.started) {
 			Camera mainCam = Camera.main;
@@ -126,11 +137,17 @@ public class BoardManager : MonoBehaviour {
 	}
 	
     /**
-    * This method displays the a point value
+    * This method displays the a clock's time
     */
     public IEnumerator DisplayTime(Vector3 position, ClockType time){
         DisplayValue popup = Instantiate(_display, position, Quaternion.identity);
         popup.ShowTime(position, time);
+		yield return new WaitForSeconds(1f);
+    }
+
+    public IEnumerator ScoreTime(Vector3 position, ClockType time){
+        DisplayValue popup = Instantiate(_display, position, Quaternion.identity);
+        popup.ScoreTime(position, time);
 		yield return new WaitForSeconds(1f);
     }
 }

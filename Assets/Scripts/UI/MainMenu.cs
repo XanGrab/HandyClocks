@@ -3,28 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenu : MonoBehaviour
-{
+public class MainMenu : MonoBehaviour {
     // // Settings settings;
-    // // AudioManager audioManager;
-    // void Awake() {
-    //     // settings = FindObjectOfType<Settings>();
-    //     // if(settings == null){
-    //     //     Debug.LogError("null settings");
-    //     //     return;
-    //     // }
-    //     // settings.GetComponent<Canvas>().enabled = false;
+    void Awake() {
+        // settings = FindObjectOfType<Settings>();
+        // if(settings == null){
+        //     Debug.LogError("null settings");
+        //     return;
+        // }
+        // settings.GetComponent<Canvas>().enabled = false;
 
-    //     // audioManager = FindObjectOfType<AudioManager>();
-    //     // if(audioManager == null){
-    //     //     Debug.LogError("null audio manager");
-    //     //     return;
-    //     // }
-    // }
+    }
 
-    // void Start(){
-    //     FindObjectOfType<AudioManager>().Play("MenuTheme");
-    // }
+    void Start(){
+        FindObjectOfType<AudioManager>().Play("Theme");
+    }
 
     public void PlayGame(){
         // AudioManager am = FindObjectOfType<AudioManager>();
@@ -32,6 +25,7 @@ public class MainMenu : MonoBehaviour
         // am.Stop("MenuTheme");
         // am.Play("ArenaTheme");
         // //test
+        FindObjectOfType<AudioManager>().Play("Button");
         SceneManager.LoadScene("Main");
     }
 

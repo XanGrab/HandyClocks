@@ -26,14 +26,14 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 		clock.PrintInfo();
         isSelected = true;
         clock.Select();
-        Reporter.ReportSelect(clock);
+        // Reporter.ReportSelect(clock);
         previousSelected = this;
 	}
 
 	private void Deselect() {
         isSelected = false;
         clock.Deselect();
-        Reporter.ReportDeselect(clock);
+        // Reporter.ReportDeselect(clock);
         previousSelected = null;
 	}
 
@@ -57,8 +57,10 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 			Deselect();
 		}else{
 			if(previousSelected == null){ 
-				if (clock.info.Equals(BoardManager.target.info)){
+				if (clock.info.Equals(BoardManager.target.info)) {
 					StartCoroutine(Score());
+				}else if(clock.info.min > -1 && clock.info.hour > 0 && clock.info.gear) {
+					StartCoroutine(ShowTime());
 				}
 	
 				Select();
@@ -95,6 +97,7 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 	}
 	
 	public void SwapOrMergeClock(Clock other) {
+		FindObjectOfType<AudioManager>().Play("Swap");
 		bool merge = true;
 		if (other.info.min > -1 && clock.info.min > -1){
 			merge = false;
@@ -108,7 +111,7 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 
 		if(merge){
 			Debug.Log($"[Debug] Merge: {this.clock} & {other}");
-            Reporter.ReportMerge(clock);
+            // Reporter.ReportMerge(clock);
 			clock.MergeClocks(other);
 		    Destroy(other.gameObject);
 		}else{
@@ -168,8 +171,14 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 		SwapClock(other.clock);
 	}
 
-	IEnumerator Score(){
-		yield return StartCoroutine(BoardManager.instance.DisplayTime(pos, clock.info));
+	IEnumerator Score() {
+        // BoardManager.instance.audioManager.Play("Yay" ;
+		FindObjectOfType<AudioManager>().Play("Yay");
+		yield return StartCoroutine(BoardManager.instance.ScoreTime(pos, clock.info));
 		BoardManager.instance.SetTarget();
+	}
+
+	IEnumerator ShowTime(){
+		yield return StartCoroutine(BoardManager.instance.DisplayTime(pos, clock.info));
 	}
 }
