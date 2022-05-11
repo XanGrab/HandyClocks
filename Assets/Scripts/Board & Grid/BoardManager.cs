@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
@@ -9,7 +8,6 @@ using TMPro;
 public class BoardManager : MonoBehaviour {
 	public static BoardManager instance;
 	[SerializeField] private TextMeshProUGUI scoreBoard; 
-	private Camera camera;
 
 	[SerializeField] private Node _nodePrefab;
 	[SerializeField] private Clock _clockPrefab;
@@ -27,9 +25,8 @@ public class BoardManager : MonoBehaviour {
 
 	void Awake(){
 		instance = this;
-		camera = Camera.main;
-		float aspectRatio = camera.aspect; // width divided by height
-		float camSize = camera.orthographicSize; // get cam size
+		float aspectRatio = Camera.main.aspect; // width divided by height
+		float camSize = Camera.main.orthographicSize; // get cam size
 		float correctPosX = aspectRatio * camSize; // this will find the left most x size
 
 		offset = _nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size;
@@ -102,9 +99,7 @@ public class BoardManager : MonoBehaviour {
     }
 
 	public void OnEsc(){ 
-        try {
-            FindObjectOfType<AudioManager>().Play("Button");
-        } catch (Exception e) {};
+        FindObjectOfType<AudioManager>().Play("Button");
         SceneManager.LoadScene("Start Menu");
     }
 

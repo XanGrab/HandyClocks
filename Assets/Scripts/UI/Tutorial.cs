@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System;
 using System.Collections;
 // using System.Collections.Generic;
 using UnityEngine.SceneManagement;
@@ -8,7 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class Tutorial : MonoBehaviour {
 	public static Tutorial instance;
-	private Camera camera;
 
 	[SerializeField] private TutNode _nodePrefab;
 	[SerializeField] private Clock _clockPrefab;
@@ -22,9 +20,8 @@ public class Tutorial : MonoBehaviour {
 
 	void Awake(){
 		instance = this;
-		camera = Camera.main;
-		float aspectRatio = camera.aspect; //(width divided by height)
-		float camSize = camera.orthographicSize; //The size value mentioned earlier
+		float aspectRatio = Camera.main.aspect; //(width divided by height)
+		float camSize = Camera.main.orthographicSize; //The size value mentioned earlier
 		float correctPosX = aspectRatio * camSize;
 
 		offset = _nodePrefab.GetComponentInChildren<SpriteRenderer>().bounds.size;
@@ -72,9 +69,7 @@ public class Tutorial : MonoBehaviour {
     }
 
 	public void OnEsc() {
-        try {
-            FindObjectOfType<AudioManager>().Play("Button");
-        } catch (Exception e) {};
+        FindObjectOfType<AudioManager>().Play("Button");
         SceneManager.LoadScene("Start Menu"); 
     }
 
