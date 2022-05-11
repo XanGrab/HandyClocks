@@ -32,5 +32,6 @@ public class Timer : MonoBehaviour {
 
     private void OnEnd(){
         Debug.Log("Time Up!");
+        BoardManager.instance.EndGame();
     }
 }

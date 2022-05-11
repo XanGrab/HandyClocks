@@ -153,4 +153,12 @@ public class BoardManager : MonoBehaviour {
         popup.ScoreTime(position, time);
 		yield return new WaitForSeconds(1f);
     }
+
+	public void EndGame() {
+		foreach (Node node in nodes) Destroy(node.gameObject); // Clear the nodes if there is anything in it.
+		Destroy(target.gameObject);
+		scoreBoard.transform.position = new Vector3(0, 0, 0);
+		scoreBoard.alignment = TextAlignmentOptions.Center;
+		scoreBoard.text = $"Super Duper!\n\n{score}";
+	}
 }
