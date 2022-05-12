@@ -3,16 +3,19 @@
 #endif
 
 using System.Runtime.InteropServices;
-// using UnityEngine;
+using UnityEngine;
 
-public static class FirebaseReporter {
-    // Game Start
-    [DllImport("__Internal")]
-    private static extern void FBGameStart();
+namespace FBAnalytics {
+    public static class FirebaseReporter {
 
-    public static void GameStart() {
-        #if FIREBASE
-        FBGameStart();
-        #endif
+        // wrong clock made
+        [DllImport("__Internal")]
+        private static extern void FBWrongTime();
+
+        public static void WrongTime(string time) {
+            #if FIREBASE
+            FBWrongTime(time);
+            #endif
+        }
     }
 }

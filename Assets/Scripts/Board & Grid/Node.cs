@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using FBAnalytics;
 
 public class Node : MonoBehaviour, IPointerEnterHandler {
     public Vector2 pos => transform.position;
@@ -60,6 +61,8 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 				if (clock.info.Equals(BoardManager.target.info)) {
 					StartCoroutine(Score());
 				}else if(clock.info.min > -1 && clock.info.hour > 0 && clock.info.gear) {
+					string report = $"{clock.info.hour}:{clock.info.min:00}";
+					FirebaseReporter.WrongTime(report);
 					StartCoroutine(ShowTime());
 				}
 	
