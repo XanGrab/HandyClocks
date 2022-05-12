@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
 
 public class Timer : MonoBehaviour {
@@ -10,6 +11,12 @@ public class Timer : MonoBehaviour {
     public int _duration;
     private int _timeRemaining;
     private bool pause;
+
+    [SerializeField] UnityEvent TimeUp;
+
+    private void Awake() {
+        TimeUp.AddListener(BoardManager.instance.EndGame);
+    }
 
     private void Start() {
         pause = false;
@@ -32,6 +39,6 @@ public class Timer : MonoBehaviour {
 
     private void OnEnd(){
         Debug.Log("Time Up!");
-        BoardManager.instance.EndGame();
+        TimeUp.Invoke();
     }
 }

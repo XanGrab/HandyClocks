@@ -59,10 +59,12 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
 		}else{
 			if(previousSelected == null){ 
 				if (clock.info.Equals(BoardManager.target.info)) {
+					string report = $"{clock.info.hour}:{clock.info.min:00}";
+                    Reporter.ScoreTime(report);
 					StartCoroutine(Score());
 				}else if(clock.info.min > -1 && clock.info.hour > 0 && clock.info.gear) {
 					string report = $"{clock.info.hour}:{clock.info.min:00}";
-					FirebaseReporter.WrongTime(report);
+					Reporter.WrongTime(report);
 					StartCoroutine(ShowTime());
 				}
 	

@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using TMPro;
 
 public class BoardManager : MonoBehaviour {
@@ -37,7 +37,18 @@ public class BoardManager : MonoBehaviour {
 		target.transform.localScale = new Vector3(2.5f, 2.5f, 2.5f);
 		target.transform.parent = transform;
 		target.name = $"Target Clock";
+
 	}
+
+    public void Reload() { 
+        FindObjectOfType<AudioManager>().Play("Button");
+        SceneManager.LoadScene("Main");
+    }
+
+	public void OnEsc() { 
+        FindObjectOfType<AudioManager>().Play("Button");
+        SceneManager.LoadScene("Start Menu");
+    }
 
 	void Start () {
 		SetTarget();
@@ -98,11 +109,6 @@ public class BoardManager : MonoBehaviour {
 		}
     }
 
-	public void OnEsc(){ 
-        FindObjectOfType<AudioManager>().Play("Button");
-        SceneManager.LoadScene("Start Menu");
-    }
-
 	public void OnTouch(InputAction.CallbackContext ctx){
 		if(ctx.started) {
 			Camera mainCam = Camera.main;
@@ -145,10 +151,16 @@ public class BoardManager : MonoBehaviour {
     }
 
 	public void EndGame() {
-		foreach (Node node in nodes) Destroy(node.gameObject); // Clear the nodes if there is anything in it.
+        // Clear the nodes if there is anything in it.
+		foreach (Node node in nodes) Destroy(node.gameObject); 
 		Destroy(target.gameObject);
-		scoreBoard.transform.position = new Vector3(0, 0, 0);
+
+		float aspectRatio = Camera.main.aspect; // width divided by height
+		float camSize = Camera.main.orthographicSize; // get cam size
+		float xPos = aspectRatio * camSize; // this will find the left most x size
+
+		scoreBoard.transform.position = new Vector3(0 + (xPos * 0.5f), -2, 0);
 		scoreBoard.alignment = TextAlignmentOptions.Center;
-		scoreBoard.text = $"Super Duper!\n\n{score}";
+		scoreBoard.text = $"{score}";
 	}
 }
