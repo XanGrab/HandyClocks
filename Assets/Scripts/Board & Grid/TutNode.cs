@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TutNode : MonoBehaviour, IPointerEnterHandler {
+public class TutNode : MonoBehaviour {
     public Vector2 pos => transform.position;
 	[SerializeField] private Clock _clockPrefab;
 
@@ -11,7 +11,7 @@ public class TutNode : MonoBehaviour, IPointerEnterHandler {
 	private static TutNode previousSelected;
 
 	private bool isSelected;
-	private Vector2[] adjacentDirections = new Vector2[] { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
+	private Vector2[] adjacentDirections = new Vector2[] { Vector2.left, Vector2.right };
 
     /**
      * Each Node object will make itself a default Clock obj
@@ -35,10 +35,6 @@ public class TutNode : MonoBehaviour, IPointerEnterHandler {
         clock.Deselect();
         // Reporter.ReportDeselect(clock);
         previousSelected = null;
-	}
-
-	public void OnPointerEnter(PointerEventData data) {
-		Debug.Log($"{name} entered!");
 	}
 
 	public void Touch()	{ 
@@ -166,7 +162,7 @@ public class TutNode : MonoBehaviour, IPointerEnterHandler {
 		SwapClock(other.clock);
 	}
 
-	IEnumerator ShowTime(){
+	IEnumerator ShowTime() {
 		yield return StartCoroutine(Tutorial.instance.DisplayTime(pos, clock.info));
 	}
 }

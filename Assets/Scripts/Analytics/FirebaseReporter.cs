@@ -33,7 +33,7 @@ namespace FBAnalytics {
 
         public static void ScoreTime(string report) {
             #if FIREBASE
-            FBWrongTime(report);
+            FBScoreTime(report);
             #endif
         }
 
@@ -43,7 +43,7 @@ namespace FBAnalytics {
 
         public static void FinalScore(string report) {
             #if FIREBASE
-            FBWrongTime(report);
+            FBFinalScore(report);
             #endif
         }
     }

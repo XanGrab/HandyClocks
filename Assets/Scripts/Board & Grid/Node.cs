@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using FBAnalytics;
 
-public class Node : MonoBehaviour, IPointerEnterHandler {
+public class Node : MonoBehaviour {
     public Vector2 pos => transform.position;
 	[SerializeField] private Clock _clockPrefab;
 
@@ -38,12 +38,7 @@ public class Node : MonoBehaviour, IPointerEnterHandler {
         previousSelected = null;
 	}
 
-	public void OnPointerEnter(PointerEventData data) {
-		Debug.Log($"{name} entered!");
-	}
-
 	public void Touch()	{ 
-		// if(BoardManager.instance.IsShifting) return;
 
 		if(!clock){
             Debug.Log($"{gameObject.name} : I don't have a clock!");
